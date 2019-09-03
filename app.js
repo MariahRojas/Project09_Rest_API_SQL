@@ -6,8 +6,17 @@ const morgan = require('morgan');
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize({
     dialect: 'sqlite',
-    storage: 'fsjstd-restapi.db'
+    storage: 'movie.db'
 });
+
+// const { sequelize, models } = require('./models');
+
+// // Get references to our models.
+// const { User, Course } = models;
+
+//Reference models
+const User = require('./models').User
+const Course = require('./models').Course
 
 //Testing the connection
 sequelize
@@ -60,15 +69,6 @@ app.use((err, req, res, next) => {
     error: {},
   });
 });
-
-
-
-
-
-
-
-
-
 
 // set our port
 app.set('port', process.env.PORT || 5000);
