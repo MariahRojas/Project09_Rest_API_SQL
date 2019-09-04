@@ -4,10 +4,12 @@
 const express = require('express');
 const morgan = require('morgan');
 const Sequelize = require('sequelize');
+//const sequelize = new Sequelize();
 const sequelize = new Sequelize({
     dialect: 'sqlite',
-    storage: 'movie.db'
+    storage: 'fsjstd-restapi.db'
 });
+const routes = require('./routes/routes');
 
 // const { sequelize, models } = require('./models');
 
@@ -41,8 +43,7 @@ app.use(morgan('dev'));
 /* Set up the following routes (listed in the format HTTP METHOD Route HTTP Status Code):
   GET /api/users 200 - Returns the currently authenticated user
   POST /api/users 201 - Creates a user, sets the Location header to "/", and returns no content */
-
-
+  app.use('/api', routes);
 
 // setup a friendly greeting for the root route
 app.get('/', (req, res) => {

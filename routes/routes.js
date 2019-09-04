@@ -8,6 +8,12 @@ const users = [];
 
 // Construct a router instance.
 const router = express.Router();
+// router.get('/users', (req, res) => {
+//   res.send('ello');
+// })
+router.get('/users', (req, res) => {
+  res.json(users);
+});
 
 // Route that creates a new user.
 router.post('/users', (req, res) => {
