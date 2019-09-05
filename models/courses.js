@@ -1,4 +1,4 @@
-'use strict';
+//'use strict';
 const Sequelize = require('sequelize');
 
 module.exports = (sequelize) => {
@@ -12,14 +12,38 @@ module.exports = (sequelize) => {
     userId: {
       type: Sequelize.INTEGER,
       allowNull: false,
+      validate: {
+        notNull: {
+          msg: 'Please provide a value for user ID'
+        },
+        notEmpty: {
+          msg: 'Please provide a value for user ID'
+        },
+      }
     },
     title: {
       type: Sequelize.STRING,
       allowNull: false,
+      validate: {
+        notNull: {
+          msg: 'Please provide a value for course title',
+        },
+        notEmpty: {
+          msg: 'Please provide a value for course title',
+        },
+      }
     },
     description: {
       type: Sequelize.TEXT,
       allowNull: false,
+      validate: {
+        notNull: {
+          msg: 'Please provide a value for course description',
+        },
+        notEmpty: {
+          msg: 'Please provide a value for course description',
+        },
+      }
     },
     estimatedTime: {
       type: Sequelize.STRING,
@@ -36,10 +60,12 @@ module.exports = (sequelize) => {
     Course.belongsTo(models.User, {
       foreignKey: {
         fieldName: 'userId',
+        field: 'userId',
         allowNull: false,
-      }
+      },
+      onDelete: 'cascade',
     });
-  };
+  }
 
   return Course;
 };
