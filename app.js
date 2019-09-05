@@ -3,22 +3,16 @@
 // load modules
 const express = require('express');
 const morgan = require('morgan');
-const Sequelize = require('sequelize');
-//const sequelize = new Sequelize();
-const sequelize = new Sequelize({
-    dialect: 'sqlite',
-    storage: 'fsjstd-restapi.db'
-});
-const routes = require('./routes/routes');
-
-// const { sequelize, models } = require('./models');
-
-// // Get references to our models.
-// const { User, Course } = models;
+const bodyParser = require('body-parser')
 
 //Reference models
-const User = require('./models').User
-const Course = require('./models').Course
+const { sequelize } = require('./models');
+
+// create the Express app
+const app = express();
+
+// variable to enable global error logging
+const enableGlobalErrorLogging = process.env.ENABLE_GLOBAL_ERROR_LOGGING === 'true';
 
 //Testing the connection
 sequelize
@@ -30,20 +24,18 @@ sequelize
     console.error('Unable to connect to the database:', err);
   });
 
-// variable to enable global error logging
-const enableGlobalErrorLogging = process.env.ENABLE_GLOBAL_ERROR_LOGGING === 'true';
-
-// create the Express app
-const app = express();
-
 // setup morgan which gives us http request logging
 app.use(morgan('dev'));
 
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }))
+
+// parse application/json
+app.use(bodyParser.json())
+
 // TODO setup your api routes here
-/* Set up the following routes (listed in the format HTTP METHOD Route HTTP Status Code):
-  GET /api/users 200 - Returns the currently authenticated user
-  POST /api/users 201 - Creates a user, sets the Location header to "/", and returns no content */
-  app.use('/api', routes);
+app.use('/api', require('./routes/users'));
+//app.use('/api', require('./routes/courses'));
 
 // setup a friendly greeting for the root route
 app.get('/', (req, res) => {
