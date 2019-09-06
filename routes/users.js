@@ -12,12 +12,14 @@ const { User } = require('../models');
 // router.get('/users', (req, res) => {
 //   res.send('ello');
 // })
+
+//Returns the currently authenticated user 
 router.get('/users', authUser, (req, res) => {
   const user = req.currentUser;
-  res.json(200).json(user);
+  res.status(200).json(user);
 });
 
-// Route that creates a new user.
+// Creates new user, sets the Location header to "/" & returns no content
 router.post('/users', async (req,res, next) => {
 
   const { firstName, lastName, emailAddress, password } = req.body;
@@ -42,6 +44,8 @@ router.post('/users', async (req,res, next) => {
   }
   
 })
+
+
 // router.post('/users', (req, res) => {
 //   // Get the user from the request body.
 //   const user = req.body;

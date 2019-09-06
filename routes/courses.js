@@ -1,6 +1,6 @@
 const express = require('express');
 const authUser = require('../auth')
-const { User, Course, sequelize } = require('../models');
+const { User, Course } = require('../models');
 const router = express.Router();
 
 const options = {
@@ -11,31 +11,31 @@ const options = {
     attributes: { exclude: ['createdAt','updatedAt'] }
 };
 
-
-router.get('/courses',async ( req, res ) => {
+//Returns a list of courses //needs to include a user that owns that course
+router.get('/courses', async ( req, res ) => {
     const allCourses = await Course.findAll(options);
     res.status(200).json(allCourses);
 });
 
-router.get('/courses/:id',async ( req, res, next ) => {
+//Returns a course for the provided course ID
+router.get('/courses/:id', async ( req, res, next ) => {
     let err = {};
-    const courses = await Course.findByPk(req.params.id,options);
-    if(courses == null){
+    const courses = await Course.findByPk(req.params.id, options);
+    if (courses == null) {
         err.message = 'Course not found'
         err.status = 404;
         next(err);
-    }else{
+    } else {
         res.status(200).json(courses);
-    } 
-    
+    }    
 });
 
+//Creates a course, sets the location header to the URi for the course and returns no content 
 router.post('/courses', authUser, async ( req, res, next ) => {
     const { title, description, estimatedTime, materialsNeeded } = req.body;
     const userId = req.currentUser.id
     
-    try{
-
+    try {
         const data = await Course.create({
             title,
             description,
@@ -50,9 +50,9 @@ router.post('/courses', authUser, async ( req, res, next ) => {
         res.status(201);
         res.end();
 
-    }catch(err){
+    } catch(err) {
 
-        if(err.name === 'SequelizeValidationError'){
+        if (err.name === 'SequelizeValidationError') {
             err.message = err.errors.map(val => val.message);
             err.status = 400;
         }
@@ -61,6 +61,7 @@ router.post('/courses', authUser, async ( req, res, next ) => {
     }
 });
 
+//Updates a course and returns to content 
 router.put('/courses/:id', authUser, async ( req, res, next ) => {
     const { title, description, estimatedTime, materialsNeeded } = req.body;
     const userId = req.currentUser.id;
@@ -68,16 +69,15 @@ router.put('/courses/:id', authUser, async ( req, res, next ) => {
 
     
     
-    try{
+    try {
         const course = await Course.findByPk(req.params.id,options);
-        //if object is empty throw error
-        if(Object.keys(req.body).length === 0){
+        if (Object.keys(req.body).length === 0) {
 
             err.status = 400;
             err.message = 'No empty objects';
             throw err;
             
-        }else if(course === null){
+        } else if(course === null) {
 
             err.status = 404;
             err.message = 'Courses not found / Unable to update';
@@ -87,7 +87,7 @@ router.put('/courses/:id', authUser, async ( req, res, next ) => {
             
             const courseUserId = course.toJSON().User.id;
 
-            if(userId === courseUserId){
+            if (userId === courseUserId) {
 
             await Course.update({
                 title,
@@ -124,22 +124,23 @@ router.put('/courses/:id', authUser, async ( req, res, next ) => {
     }
 });
 
+//Deletes a course and returns no content 
 router.delete('/courses/:id', authUser, async ( req, res, next ) => {
 
-    try{
+    try {
 
         const userid = req.currentUser.id;
         const course = await Course.findByPk(req.params.id,options);
         console.log(`Output => : course`, course);
         const err = new Error;
 
-        if(course === null){
+        if (course === null) {
 
             err.status = 404;
             err.message = 'Courses not found / Unable to delete';
             throw err;
 
-        }else{
+        } else {
 
             const courseUserId = course.toJSON().User.id;
 
