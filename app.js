@@ -35,7 +35,7 @@ app.use(bodyParser.json())
 
 // TODO setup your api routes here
 app.use('/api', require('./routes/users'));
-//app.use('/api', require('./routes/courses'));
+app.use('/api', require('./routes/courses'));
 
 // setup a friendly greeting for the root route
 app.get('/', (req, res) => {

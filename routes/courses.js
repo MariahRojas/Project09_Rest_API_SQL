@@ -1,6 +1,8 @@
 const express = require('express');
 const authUser = require('../auth')
 const { User, Course } = require('../models');
+
+// Construct a router instance.
 const router = express.Router();
 
 const options = {
@@ -104,22 +106,17 @@ router.put('/courses/:id', authUser, async ( req, res, next ) => {
             });
 
             res.status(204).end();
-
             } else {
-
-            err.status = 403;
-            err.message = 'Unable to update other users\'s courses';
-            throw err;
-
+                err.status = 403;
+                err.message = 'Unable to update other users\'s courses';
+                throw err;
             }
         }
     } catch(err) {
-
         if(err.name === 'SequelizeValidationError'){
             err.message = err.errors.map(val => val.message);
             err.status = 400;
         }
-
         next(err);
     }
 });
@@ -128,7 +125,6 @@ router.put('/courses/:id', authUser, async ( req, res, next ) => {
 router.delete('/courses/:id', authUser, async ( req, res, next ) => {
 
     try {
-
         const userid = req.currentUser.id;
         const course = await Course.findByPk(req.params.id,options);
         console.log(`Output => : course`, course);
@@ -139,9 +135,7 @@ router.delete('/courses/:id', authUser, async ( req, res, next ) => {
             err.status = 404;
             err.message = 'Courses not found / Unable to delete';
             throw err;
-
         } else {
-
             const courseUserId = course.toJSON().User.id;
 
             if(userid === courseUserId){
@@ -158,14 +152,12 @@ router.delete('/courses/:id', authUser, async ( req, res, next ) => {
     
                 err.status = 403;
                 err.message = 'Unable to delete other users\'s courses';
-                throw err;
-    
+                throw err;    
             }
         }
     } catch(err) {
         next(err);
-    }
-    
+    }    
 });
 
 module.exports = router;

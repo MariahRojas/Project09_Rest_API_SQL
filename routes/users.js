@@ -1,13 +1,9 @@
 //'use strict';
-
 const express = require('express');
 const authUser = require('../auth')
-
+const { User } = require('../models');
 // Construct a router instance.
 const router = express.Router();
-
-const { User } = require('../models');
-
 
 // router.get('/users', (req, res) => {
 //   res.send('ello');
