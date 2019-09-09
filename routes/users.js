@@ -17,7 +17,6 @@ router.get('/users', authUser, (req, res) => {
 
 // Creates new user, sets the Location header to "/" & returns no content
 router.post('/users', async (req,res, next) => {
-
   const { firstName, lastName, emailAddress, password } = req.body;
 
   try{

@@ -1,6 +1,6 @@
 'use strict';
 const Sequelize = require('sequelize');
-const bcrypt = require('bcryptjs');
+const bcryptjs = require('bcryptjs');
 
 module.exports = (sequelize) => {
   class User extends Sequelize.Model {}
@@ -60,21 +60,21 @@ module.exports = (sequelize) => {
       validate: {
         len: {
           args:5,
-          msg: "Password must be at least 8 char long"
+          msg: "Password must be at least 8 characters long"
         },
         notNull: {
           msg: 'Password is required',
         },
         notEmpty: {
-          msg: 'Password can not be left empty',
+          msg: 'Password cannot be left empty',
         },
       }
     }
   }, { sequelize });
 
   User.beforeCreate(user => {
-    let salt = bcrypt.genSaltSync();
-    user.password = bcrypt.hashSync(user.password, salt);
+    let salt = bcryptjs.genSaltSync();
+    user.password = bcryptjs.hashSync(user.password, salt);
   })
 
   User.associate = (models) => {
